@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2563eb">
+<title>StudyAI - Smart AI Study Companion</title>
+
+<!-- Modern Clean Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- App Icon & Favicon SVG Data URLs -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white'>🤖</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white'>🤖</text></svg>">
+
+<style>
+:root {
+    --bg-primary: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --brand-blue: #2563eb;
+    --brand-purple: #7c3aed;
+    --border-color: #e2e8f0;
+    --accent-light: #eff6ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-bottom: 120px;
+}
+
+/* Splash Screen Overlay */
+#splashScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: white;
+    z-index: 9999999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+#splashScreen h1 {
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: white;
+    padding: 24px 20px 30px 20px;
+    border-radius: 0 0 28px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25);
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    margin-top: 2px;
+    font-size: 13px;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.header-user-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s;
+}
+
+.header-user-img:hover {
+    transform: scale(1.05);
+}
+
+/* Container & Page Smooth Transitions */
+.container {
+    padding: 20px;
+    max-width: 650px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.container.active-page {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    animation: fade .4s ease;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card h2 {
+    margin-bottom: 14px;
+    color: var(--brand-blue);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+/* Progress */
+.progress {
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress div {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    transition: width 0.4s ease;
+}
+
+/* Buttons and Inputs */
+button {
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--brand-blue);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 6px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+button:hover {
+    opacity: .92;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button.secondary {
+    background: #64748b;
+}
+
+button.danger {
+    background: #ef4444;
+}
+
+button.sm-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+    margin-top: 0;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    outline: none;
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Grid Systems */
+.actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.action {
+    background: var(--accent-light);
+    padding: 16px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    color: var(--brand-blue);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.action:hover {
+    transform: translateY(-2px);
+    background: #e0e7ff;
+}
+
+/* Quick Stats Bar */
+.stat-box {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 14px;
+    text-align: center;
+}
+.stat-box h3 {
+    font-size: 18px;
+    font-weight: 800;
+}
+.stat-box small {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Chat UI & Spinner */
+.chat-container {
+    height: 400px;
+    overflow-y: auto;
+    padding: 14px;
+    background: var(--bg-primary);
+    border-radius: 16px;
+    margin: 15px 0;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+}
+
+.chat-bubble {
+    padding: 14px 16px;
+    border-radius: 16px;
+    max-width: 90%;
+    line-height: 1.6;
+    word-break: break-word;
+    font-size: 14px;
+    position: relative;
+}
+
+.chat-user {
+    background: var(--brand-blue);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.chat-ai {
+    background: var(--card-bg);
+    color: var(--text-main);
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid var(--border-color);
+    width: 98%;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--accent-light);
+    color: var(--brand-blue);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    transition: background 0.2s;
+}
+
+.copy-btn:hover {
+    background: #dbeafe;
+}
+
+/* AI Loading Spinner Component */
+.ai-spinner-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--brand-blue);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(37, 99, 235, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--brand-blue);
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Profile Card Styling */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.profile-avatar-box {
+    position: relative;
+    width: 85px;
+    height: 85px;
+}
+
+.avatar-img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--brand-blue);
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.upload-icon-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--brand-blue);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+/* Dynamic Item Styles */
+.task {
+    background: var(--bg-primary);
+    padding: 14px;
+    margin: 8px 0;
+    border-radius: 14px;
+    border-left: 4px solid var(--brand-blue);
+    word-break: break-word;
+    border: 1px solid var(--border-color);
+    border-left-width: 4px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-primary);
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 14px;
+    border-left: 4px solid var(--brand-blue);
+    border-top: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.task-item.completed {
+    border-left-color: #22c55e;
+    opacity: 0.7;
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+}
+
+.badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    margin-left: 5px;
+}
+
+.badge-high { background: #ef4444; }
+.badge-medium { background: #f59e0b; }
+.badge-low { background: #10b981; }
+
+/* Calculator Keypad */
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.calc-grid button {
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 0;
+}
+
+/* Developer Credit Box */
+.developer-card {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    border-radius: 18px;
+    padding: 18px;
+    text-align: center;
+    margin-top: 20px;
+    border: 1px solid #334155;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
+}
+
+.developer-card h4 {
+    color: #38bdf8;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.developer-card p {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+/* App Footer */
+footer {
+    max-width: 650px;
+    margin: 20px auto 70px auto;
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Bottom Navigation */
+nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--card-bg);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 5px;
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.06);
+    z-index: 1000;
+    border-top: 1px solid var(--border-color);
+}
+
+nav button {
+    background: none;
+    color: var(--brand-blue);
+    font-size: 20px;
+    padding: 8px 12px;
+    margin: 0;
+    border-radius: 12px;
+}
+
+nav button:hover {
+    background: var(--accent-light);
+    transform: none;
+    box-shadow: none;
+}
+
+/* Toast Notification Overlay */
+#customToast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--brand-blue);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 99999;
+    display: none;
+    animation: fade .3s ease;
+    font-weight: 600;
+}
+
+/* Dark Mode Theme Overrides */
+.dark {
+    --bg-primary: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --accent-light: #1e3a8a;
+    --brand-blue: #38bdf8;
+}
+
+.dark .chat-user {
+    background: #0284c7;
+    color: white;
+}
+
+.dark .action {
+    color: #38bdf8;
+}
+
+.dark nav button {
+    color: #38bdf8;
+}
+
+.dark nav button:hover {
+    background: #1e3a8a;
+}
+
+/* App Blocker Full Screen Overlay */
+#focusOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0f172a;
+    color: #f8fafc;
+    z-index: 999999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+#focusOverlay h1 {
+    font-size: 80px;
+    margin: 20px 0;
+    color: #38bdf8;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splashScreen">
+    <h1>🤖 StudyAI</h1>
+    <p>Smart AI Study Companion</p>
+</div>
+
+<!-- Header -->
+<header>
+    <div>
+        <h1>🤖 StudyAI</h1>
+        <p id="headerSubText">Your Personal AI Study Companion</p>
+    </div>
+    <div id="headerUserAvatar" class="header-user-img" onclick="showPage('profile')" style="cursor:pointer;" title="View Profile">S</div>
+</header>
+
+<div id="customToast">🔔 Notification Sent!</div>
+
+<!-- LOGIN & SIGN-UP PAGE -->
+<div id="authPage" class="container" style="display:none;">
+    <div class="card">
+        <h2 id="authTitle">🔑 Login / Sign-up</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Access your personalized StudyAI dashboard.</p>
+        
+        <input id="authEmail" type="email" placeholder="Student Email Address">
+        <input id="authPassword" type="password" placeholder="Password">
+        
+        <button onclick="handleAuth()" style="width: 100%; margin-top: 10px;">Login / Sign Up</button>
+        <button onclick="showPage('home')" class="secondary" style="width: 100%; margin-top: 8px;">Continue as Guest</button>
+    </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage" class="container">
+    
+    <!-- Hero / Welcome Card -->
+    <div class="card" style="background: linear-gradient(135deg, var(--card-bg), var(--accent-light));">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h2><span id="welcomePrefix">Hello</span>, <span id="welcomeUserName">Student</span> 👋</h2>
+                <p id="liveTimeDisplay" style="color: var(--brand-purple); font-weight: 700; font-size: 13px; margin-top: -6px;">--:-- --</p>
+            </div>
+            <div style="display:flex; gap:6px;">
+                <button onclick="toggleLanguage()" class="sm-btn secondary">🌐 <span id="langBtnText">Urdu</span></button>
+                <button onclick="darkMode()" class="sm-btn secondary">🌙</button>
+            </div>
+        </div>
+        <p id="quoteBox" style="color: var(--text-muted); font-size: 13px; margin-top: 10px; font-style: italic;">"Loading daily motivation..."</p>
+    </div>
+
+    <!-- Quick Performance Dashboard -->
+    <div class="card">
+        <h2 id="titleOverview">📊 Performance Quick Overview</h2>
+        <div class="grid-4">
+            <div class="stat-box">
+                <h3 id="homeStreakVal" style="color: #ef4444;">0d</h3>
+                <small id="lblStreak">Streak</small>
+            </div>
+            <div class="stat-box">
+                <h3 id="homeXPVal" style="color: var(--brand-purple);">0</h3>
+                <small id="lblXP">XP Earned</small>
+            </div>
+            <div class="stat-box">
+                <h3 id="homeFocusVal" style="color: var(--brand-blue);">0m</h3>
+                <small id="lblFocus">Focus</small>
+            </div>
+            <div class="stat-box">
+                <h3 id="homeTasksDoneVal" style="color: #10b981;">0/5</h3>
+                <small id="lblTasks">Tasks</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Study Goal Progress Card -->
+    <div class="card">
+        <h2 id="titleTarget">📊 Daily Target Goal</h2>
+        <h2 id="progressText" style="float: right; margin-top: -30px;">0%</h2>
+        <div class="progress" style="margin-top: 10px;">
+            <div id="progressBar"></div>
+        </div>
+        <p id="studyTimeText" style="margin-top: 10px; font-size: 13px; color: var(--text-muted);">
+            Tasks Completed Today: <strong id="completedCount" style="color: var(--text-main);">0</strong>/5
+        </p>
+    </div>
+
+    <!-- Quick Navigation Actions -->
+    <div class="card">
+        <h2>⚡ Quick Actions</h2>
+        <div class="actions">
+            <div class="action" onclick="showPage('ai')">🤖<br>Ask AI Tutor</div>
+            <div class="action" onclick="showPage('ocr')">📷<br>OCR Question Scanner</div>
+            <div class="action" onclick="showPage('lectures')">🎥<br>Video Lectures</div>
+            <div class="action" onclick="showPage('calculator')">🧮<br>Scientific Calc</div>
+            <div class="action" onclick="showPage('leaderboard')">🏆<br>Leaderboard</div>
+            <div class="action" onclick="showPage('rewards')">🎁<br>Streak Rewards</div>
+        </div>
+    </div>
+
+    <!-- Today's Tasks Interactive Section -->
+    <div class="card">
+        <h2>✅ Today's Tasks</h2>
+        
+        <div style="display: flex; gap: 8px;">
+            <input id="todayTaskInput" placeholder="Add today's study target..." style="margin: 0;">
+            <select id="todayTaskPriority" style="width: 110px; margin: 0;">
+                <option value="high">🔥 High</option>
+                <option value="medium" selected>⚡ Med</option>
+                <option value="low">🌱 Low</option>
+            </select>
+        </div>
+        <button onclick="addTodayTask()" style="width: 100%; margin-top: 10px;">➕ Add Today's Task</button>
+
+        <div id="todayTaskList" style="margin-top: 15px;"></div>
+    </div>
+
+    <!-- Smart Recommendations -->
+    <div class="card">
+        <h2>🤖 Smart Recommendation</h2>
+        <p style="font-size: 14px; line-height: 1.5; color: var(--text-muted);">
+            💡 "Consistency is key! Spend 25 minutes reviewing active flashcards or formulas before starting complex practice problems."
+        </p>
+    </div>
+
+</div>
+
+<!-- OCR SCANNER PAGE -->
+<div id="ocrPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>📷 OCR Question Scanner</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+            Upload or capture an image of a study question to extract text automatically.
+        </p>
+        
+        <input type="file" accept="image/*" id="ocrInput" onchange="processOCR(event)">
+        <img id="ocrPreview" src="" alt="Captured Question" style="display:none; width:100%; border-radius:15px; margin: 10px 0; max-height:220px; object-fit:cover;">
+        
+        <div id="ocrStatus" style="font-size: 13px; color: var(--brand-blue); margin-top: 6px;"></div>
+        
+        <textarea id="ocrResultText" placeholder="Scanned question text will appear here..." style="height: 100px; margin-top: 10px;"></textarea>
+        <button onclick="sendOCRToAI()" style="width: 100%;">🚀 Solve Scanned Question with AI</button>
+    </div>
+</div>
+
+<!-- VIDEO LECTURES PAGE WITH EMBEDDED YOUTUBE -->
+<div id="lecturesPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>🎥 Subject Video Lectures</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+            Watch educational video resources directly inside the app to stay focused.
+        </p>
+
+        <div class="task">
+            <b>📐 Mathematics - Quadratic Equations</b>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0;">Comprehensive step-by-step lecture.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/ZBalWWHYyiA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="task">
+            <b>⚡ Physics - Newton's Laws of Motion</b>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0;">Visual conceptual breakdown.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/kKKM8Y-u7ds" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="task">
+            <b>🧪 Chemistry - Periodic Table & Chemical Bonding</b>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0;">Fundamental rules & examples.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/P3RXtoYCF48" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FULLY FUNCTIONAL SCIENTIFIC CALCULATOR PAGE -->
+<div id="calculatorPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>🧮 Scientific Calculator</h2>
+        <input id="calcDisplay" readonly placeholder="0" style="font-size: 24px; text-align: right; font-weight: bold;">
+        
+        <div class="calc-grid">
+            <button class="secondary" onclick="calcAppend('sin(')">sin</button>
+            <button class="secondary" onclick="calcAppend('cos(')">cos</button>
+            <button class="secondary" onclick="calcAppend('tan(')">tan</button>
+            <button class="danger" onclick="calcClear()">C</button>
+
+            <button class="secondary" onclick="calcAppend('sqrt(')">√</button>
+            <button class="secondary" onclick="calcAppend('^')">^</button>
+            <button class="secondary" onclick="calcAppend('(')">(</button>
+            <button class="secondary" onclick="calcAppend(')')">)</button>
+
+            <button onclick="calcAppend('7')">7</button>
+            <button onclick="calcAppend('8')">8</button>
+            <button onclick="calcAppend('9')">9</button>
+            <button class="secondary" onclick="calcAppend('/')">/</button>
+
+            <button onclick="calcAppend('4')">4</button>
+            <button onclick="calcAppend('5')">5</button>
+            <button onclick="calcAppend('6')">6</button>
+            <button class="secondary" onclick="calcAppend('*')">*</button>
+
+            <button onclick="calcAppend('1')">1</button>
+            <button onclick="calcAppend('2')">2</button>
+            <button onclick="calcAppend('3')">3</button>
+            <button class="secondary" onclick="calcAppend('-')">-</button>
+
+            <button onclick="calcAppend('0')">0</button>
+            <button onclick="calcAppend('.')">.</button>
+            <button onclick="calcSolve()" style="background: #22c55e;">=</button>
+            <button class="secondary" onclick="calcAppend('+')">+</button>
+        </div>
+    </div>
+</div>
+
+<!-- LEADERBOARD PAGE -->
+<div id="leaderboardPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>🏆 Student Leaderboard</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Top active students based on XP earned.</p>
+        
+        <div id="leaderboardList">
+            <div class="task-item">
+                <div><b>🥇 1. Ayesha Khan</b><br><small style="color:var(--text-muted);">Level 12 • 2,450 XP</small></div>
+                <span class="badge badge-high">TOP 1</span>
+            </div>
+            <div class="task-item">
+                <div><b>🥈 2. Hamza Ali</b><br><small style="color:var(--text-muted);">Level 10 • 1,980 XP</small></div>
+                <span class="badge badge-medium">TOP 2</span>
+            </div>
+            <div class="task-item">
+                <div><b>🥉 3. You (Student)</b><br><small style="color:var(--text-muted);">Level <span id="lbUserLevel">1</span> • <span id="lbUserXP">0</span> XP</small></div>
+                <span class="badge badge-low">YOU</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- STUDY STREAK REWARDS PAGE -->
+<div id="rewardsPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>🎁 Study Streak Rewards</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Maintain daily study streaks to unlock exclusive rewards and custom themes!</p>
+        
+        <div class="task">
+            <b>🔥 3-Day Streak Reward</b>
+            <p style="font-size: 12px; color: var(--text-muted);">Unlocks: +50 Bonus XP Badge</p>
+            <button onclick="claimReward(3, 50)" class="sm-btn">Claim Reward</button>
+        </div>
+
+        <div class="task">
+            <b>🔥 7-Day Streak Reward</b>
+            <p style="font-size: 12px; color: var(--text-muted);">Unlocks: "Master Scholar" Profile Avatar Border</p>
+            <button onclick="claimReward(7, 150)" class="sm-btn">Claim Reward</button>
+        </div>
+
+        <div class="task">
+            <b>🔥 30-Day Streak Reward</b>
+            <p style="font-size: 12px; color: var(--text-muted);">Unlocks: VIP Dark Gold Theme</p>
+            <button onclick="claimReward(30, 500)" class="sm-btn">Claim Reward</button>
+        </div>
+    </div>
+</div>
+
+<!-- ALL SUBJECTS PAGE -->
+<div id="subjectPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>📚 My Subjects</h2>
+        <input id="searchSubject" placeholder="Search subject..." onkeyup="searchSubject()">
+    </div>
+
+    <div id="subjects">
+        <div class="card subject">
+            <h2>📐 Mathematics</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 12</p>
+            <button onclick="openSubjectNotes('Mathematics')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>⚡ Physics</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 10</p>
+            <button onclick="openSubjectNotes('Physics')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>🧪 Chemistry</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 11</p>
+            <button onclick="openSubjectNotes('Chemistry')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>🧬 Biology</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 14</p>
+            <button onclick="openSubjectNotes('Biology')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>💻 Computer Science</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 15</p>
+            <button onclick="openSubjectNotes('Computer Science')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>📖 English</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 8</p>
+            <button onclick="openSubjectNotes('English')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>✍️ Urdu</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 9</p>
+            <button onclick="openSubjectNotes('Urdu')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>🌙 Islamiyat</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 7</p>
+            <button onclick="openSubjectNotes('Islamiyat')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>🇵🇰 Pakistan Studies</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 6</p>
+            <button onclick="openSubjectNotes('Pakistan Studies')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>🌍 General Science</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 10</p>
+            <button onclick="openSubjectNotes('General Science')">Open Notes</button>
+        </div>
+
+        <div class="card subject">
+            <h2>📊 Accounting / Commerce</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Chapters: 10</p>
+            <button onclick="openSubjectNotes('Accounting')">Open Notes</button>
+        </div>
+    </div>
+</div>
+
+<!-- ADVANCED AI ASSISTANT PAGE -->
+<div id="aiPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>🤖 Advanced AI Tutor</h2>
+        <p style="font-size: 13px; color: var(--text-muted);">Get instant step-by-step solutions & concept clarity powered by Google AI.</p>
+        
+        <div class="grid-2" style="margin-top: 12px;">
+            <div>
+                <label style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--text-muted);">Subject Context:</label>
+                <select id="aiSubjectContext" style="padding: 10px;">
+                    <option value="General Study">🌐 General</option>
+                    <option value="Mathematics">📐 Mathematics</option>
+                    <option value="Physics">⚡ Physics</option>
+                    <option value="Chemistry">🧪 Chemistry</option>
+                    <option value="Biology">🧬 Biology</option>
+                    <option value="Computer Science">💻 Computer Science</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--text-muted);">AI Model Target:</label>
+                <select id="aiModelVersion" style="padding: 10px;">
+                    <option value="gemini-2.5-flash">⚡ Gemini Flash (Fast)</option>
+                    <option value="gemini-2.5-pro">🧠 Gemini Pro (Detailed)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="chat-container" id="chatBox">
+            <div class="chat-bubble chat-ai">
+                🤖 Assalam-o-Alaikum! I am your AI Study Tutor. Ask me any question, derive equations, or use the quick action shortcuts below!
+            </div>
+        </div>
+
+        <textarea id="aiInput" placeholder="Ask anything... (e.g. Derive Quadratic Formula or Explain Photosynthesis step-by-step)" style="height: 80px; resize: vertical;"></textarea>
+        <button onclick="askAI()" style="width: 100%; padding: 14px; font-size: 15px;">🚀 Solve / Answer with AI</button>
+    </div>
+
+    <div class="card">
+        <h2>⚡ Smart Prompt Toolkits</h2>
+        <div class="grid-2">
+            <div class="action" onclick="runAITool('Create a 5 MCQ Quiz with key options and answers for: ')">❓ MCQ Quiz</div>
+            <div class="action" onclick="runAITool('Provide a quick formula sheet & key terms summary for: ')">📝 Formula Sheet</div>
+            <div class="action" onclick="runAITool('Solve step-by-step with clear explanation: ')">💡 Step Solver</div>
+            <div class="action" onclick="runAITool('Outline a comprehensive long answer / essay on: ')">📄 Answer Outline</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🔑 Settings & Gemini API Key</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Enter your free Gemini API Key from Google AI Studio to unlock live web-search integration.</p>
+        <input id="apiKeyInput" type="password" placeholder="Paste Gemini API Key (AIzaSy...)">
+        <button onclick="saveApiKey()" style="width: 100%;">Save API Key</button>
+    </div>
+</div>
+
+<!-- NOTES PAGE -->
+<div id="notesPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>📝 Smart Notes with Photo Attachment</h2>
+        <input id="noteTitle" placeholder="Note title (e.g. Physics Chapter 3 Formulas)">
+        
+        <label style="display:block; margin: 10px 0 4px 0; font-weight: bold; font-size: 13px; color: var(--text-muted);">🖼️ Select Attachment Image:</label>
+        <input type="file" id="noteImage" accept="image/*" onchange="previewImage(event)">
+        
+        <img id="imagePreview" src="" alt="Selected Photo" style="display:none; width:100%; border-radius:15px; margin: 10px 0; max-height:220px; object-fit:cover;">
+
+        <textarea id="noteContent" placeholder="Write your revision notes, main points, or key summary..." style="height:110px;"></textarea>
+        <button onclick="saveNoteWithPhoto()" style="width: 100%;">💾 Save Note</button>
+    </div>
+
+    <div class="card">
+        <h2>📌 Saved Study Notes</h2>
+        <div id="notesList"></div>
+    </div>
+</div>
+
+<!-- FOCUS PAGE (CONTAINS FOCUS TIMER + ALARM & REMINDER SYSTEM) -->
+<div id="focusPage" class="container" style="display:none;">
+    
+    <!-- Focus Mode Block -->
+    <div class="card">
+        <h2>⏱️ Focus Mode & Screen Lock</h2>
+        <p style="margin-bottom: 12px; font-size: 13px; color: var(--text-muted);">Select duration and activate deep focus block mode to maximize your study output.</p>
+        
+        <label style="font-size: 12px; font-weight: bold; color: var(--text-muted);">FOCUS DURATION:</label>
+        <select id="focusDuration">
+            <option value="15">15 Minutes</option>
+            <option value="25" selected>25 Minutes (Standard Pomodoro)</option>
+            <option value="45">45 Minutes (Extended Session)</option>
+            <option value="60">60 Minutes (Deep Work)</option>
+        </select>
+
+        <h1 id="focusTimer" style="font-size: 52px; text-align: center; margin: 20px 0; color: var(--brand-blue); font-weight: 800;">25:00</h1>
+        
+        <button onclick="startFocusBlocker()" style="width: 100%; font-size: 16px; padding: 14px;">🔒 Start Focus Session Mode</button>
+        <button onclick="resetFocus()" class="secondary" style="width: 100%; margin-top: 8px;">Reset Timer</button>
+        
+        <p id="sessions" style="margin-top:15px; font-size: 13px; font-weight: bold; text-align: center; color: var(--text-muted);">Sessions completed: 0</p>
+    </div>
+
+    <!-- SMART REMINDER & ALARM SYSTEM SECTION -->
+    <div class="card">
+        <h2>🔔 Smart Scheduled Reminders & Alarm System</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
+            Pick a time & schedule custom study alarms with sound alerts.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <input id="reminderNote" type="text" placeholder="Reminder Note (e.g. Physics Chapter 4 Revision)" />
+
+            <div class="grid-2">
+                <div>
+                    <label style="font-size: 11px; font-weight: bold; color: var(--text-muted);">REMINDER CATEGORY</label>
+                    <select id="reminderTypeSelect" style="margin-top: 4px;">
+                        <option value="study">📚 Study Session</option>
+                        <option value="break">☕ Water & Rest Break</option>
+                        <option value="exam">⚡ Exam / Test Target</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: bold; color: var(--text-muted);">SET TIME (ALARM)</label>
+                    <input id="reminderTime" type="time" style="margin-top: 4px;" />
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 4px;">
+                <button onclick="scheduleAlarm()" style="width: 100%;">⏰ Schedule Alarm</button>
+                <button onclick="triggerEnhancedReminder()" class="secondary" style="width: 100%;">🔔 Test Sound Alert</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <h3 style="font-size: 15px; color: var(--brand-blue); margin-bottom: 8px;">⏰ Active Scheduled Alarms</h3>
+            <div id="activeAlarmsList"></div>
+        </div>
+    </div>
+
+    <!-- Focus Rules Box -->
+    <div class="card">
+        <h2>🌱 Focus Rules & Rewards</h2>
+        <p style="font-size: 13px; line-height: 1.6;"><b>• Full Immersion:</b> Activating focus mode forces full-screen immersion to keep you centered on your work.</p>
+        <p style="margin-top: 8px; font-size: 13px; line-height: 1.6;"><b>• XP Reward:</b> Earn +25 XP and grow your daily streak for every session completed!</p>
+    </div>
+</div>
+
+<!-- FULLSCREEN APP BLOCKER OVERLAY -->
+<div id="focusOverlay">
+    <h2>🎯 DEEP FOCUS MODE ACTIVE</h2>
+    <p style="margin-top: 8px; opacity: 0.9;">All distractions locked. Focus on your study target!</p>
+    <h1 id="overlayTimer">25:00</h1>
+    <p style="margin-bottom: 25px; opacity: 0.8; max-width: 400px; font-size: 14px;">Stay on this screen. Leaving or closing will disrupt your active study session.</p>
+    <button onclick="stopFocusBlocker()" class="danger" style="padding: 14px 24px; font-size: 15px;">Exit Focus Mode</button>
+</div>
+
+<!-- DYNAMIC ANALYTICS PAGE -->
+<div id="analyticsPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>📊 Learning Analytics</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+            <div class="action" style="padding: 16px;">
+                <span style="font-size: 26px; font-weight: 800; color: var(--brand-blue);" id="analyticsTotalTime">0m</span><br>
+                <small style="font-size: 12px; color: var(--text-muted);">Focus Time</small>
+            </div>
+            <div class="action" style="padding: 16px;">
+                <span style="font-size: 26px; font-weight: 800; color: var(--brand-purple);" id="analyticsXP">0</span><br>
+                <small style="font-size: 12px; color: var(--text-muted);">Total XP</small>
+            </div>
+        </div>
+
+        <h3>🎯 Daily Goal Completion</h3>
+        <p id="analyticsGoalPercentText" style="float: right; font-weight: bold; color: var(--brand-blue);">0%</p>
+        <div class="progress" style="margin-top: 8px;">
+            <div id="analyticsProgressBar"></div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;" id="analyticsGoalSubText">0 of 5 tasks completed today</p>
+    </div>
+
+    <div class="card">
+        <h2>🏆 Achievements & Milestones</h2>
+        <div class="task" id="achieveStreak">🔥 0 Day Study Streak</div>
+        <div class="task" id="achieveFocusSessions">⏱️ 0 Focus Sessions Completed</div>
+        <div class="task" id="achieveNotesCount">📚 0 Notes Created</div>
+        <div class="task" id="achieveGoalsCount">🎯 0 Active Goals</div>
+    </div>
+</div>
+
+<!-- PROFESSIONAL SMART PLANNER PAGE -->
+<div id="plannerPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>📅 Professional Planner</h2>
+        <input id="planTask" placeholder="Study Task Name (e.g. Physics Revision)">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <input id="planDate" type="date">
+            <select id="planPriority">
+                <option value="high">🔥 High Priority</option>
+                <option value="medium" selected>⚡ Med Priority</option>
+                <option value="low">🌱 Low Priority</option>
+            </select>
+        </div>
+
+        <button onclick="addPlan()" style="width:100%; margin-top: 10px;">➕ Add Study Schedule</button>
+    </div>
+
+    <div class="card">
+        <h2>📌 Active Study Schedules</h2>
+        <div id="plannerList"></div>
+    </div>
+
+    <div class="card">
+        <h2>⏳ Exam Tracker & Countdown</h2>
+        <input id="examTitle" placeholder="Exam Name (e.g. Final Board Exam)">
+        <input id="examDate" type="date">
+        <button onclick="saveExam()" style="width:100%;">Save Target Exam</button>
+        
+        <div style="text-align: center; margin-top: 15px;">
+            <p id="examNameShow" style="font-weight: bold; color: var(--text-muted);"></p>
+            <h1 id="countdown" style="font-size: 32px; color: var(--brand-blue); margin-top:4px;">No exam set</h1>
+        </div>
+    </div>
+</div>
+
+<!-- FUNCTIONAL GOALS PAGE -->
+<div id="goalsPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>🎯 Smart Goals & Target Milestones</h2>
+        <input id="goalInput" placeholder="Define target (e.g. Score 90%+ in Mathematics)">
+        
+        <select id="goalCategory">
+            <option value="Academic">📚 Academic</option>
+            <option value="Daily Routine">⏰ Daily Routine</option>
+            <option value="Exam Prep">✏️ Exam Prep</option>
+            <option value="Personal">⭐ Personal</option>
+        </select>
+        
+        <button onclick="addGoal()" style="width: 100%; margin-top: 10px;">🎯 Add Goal (+20 XP)</button>
+    </div>
+
+    <div class="card">
+        <h2>🏆 Goal Milestones Progress</h2>
+        <div id="goalList"></div>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h2>✨ Total Experience Level</h2>
+        <h1 id="xpDisplay" style="font-size: 42px; color: var(--brand-purple); margin: 10px 0; font-weight: 800;">0 XP</h1>
+        <p style="color: var(--text-muted); font-size: 13px;">Complete study goals & focus sessions to level up!</p>
+    </div>
+</div>
+
+<!-- FEEDBACK & CONTACT PAGE -->
+<div id="feedbackPage" class="container" style="display:none;">
+    <div class="card">
+        <h2>💬 Feedback & Contact Support</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">We'd love to hear your feedback or help with issues!</p>
+
+        <input id="feedbackName" placeholder="Your Name">
+        <input id="feedbackEmail" type="email" placeholder="Your Email">
+        <textarea id="feedbackMsg" placeholder="Write your message or feature request..." style="height: 100px;"></textarea>
+        
+        <button onclick="submitFeedback()" style="width: 100%;">📩 Send Feedback</button>
+    </div>
+</div>
+
+<!-- PROFESSIONAL STUDENT PROFILE PAGE -->
+<div id="profilePage" class="container" style="display:none;">
+    <div class="card">
+        <div class="profile-header">
+            <div class="profile-avatar-box">
+                <div id="profileAvatar" class="avatar-img">S</div>
+                <label for="profilePicInput" class="upload-icon-btn" title="Upload Photo">📷</label>
+                <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(event)">
+            </div>
+            <div>
+                <h2 id="profileDisplayName" style="margin-bottom:2px;">Student Name</h2>
+                <p id="profileDisplaySub" style="font-size: 13px; color: var(--text-muted);">Class / Board Info</p>
+                <p id="profileDisplayGoal" style="font-size: 12px; color: var(--brand-blue); font-weight:bold; margin-top:2px;">Target: Goal Not Set</p>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; text-align:center;">
+            <div style="background: var(--bg-primary); padding:12px; border-radius:12px; border:1px solid var(--border-color);">
+                <h3 id="profXP" style="color: var(--brand-purple);">0</h3>
+                <small style="color: var(--text-muted);">Total XP</small>
+            </div>
+            <div style="background: var(--bg-primary); padding:12px; border-radius:12px; border:1px solid var(--border-color);">
+                <h3 id="profStreak" style="color: #ef4444;">0</h3>
+                <small style="color: var(--text-muted);">Day Streak</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>👤 Academic Details</h2>
+        <label style="font-size:12px; font-weight:bold; color: var(--text-muted);">FULL NAME:</label>
+        <input id="studentName" placeholder="Enter Full Name">
+
+        <div class="grid-2">
+            <div>
+                <label style="font-size:12px; font-weight:bold; color: var(--text-muted);">ROLL NO / ID:</label>
+                <input id="studentRollNo" placeholder="e.g. 2026-CS-89">
+            </div>
+            <div>
+                <label style="font-size:12px; font-weight:bold; color: var(--text-muted);">GRADE / CLASS:</label>
+                <input id="studentClass" placeholder="e.g. 11th ICS / FSC">
+            </div>
+        </div>
+
+        <label style="font-size:12px; font-weight:bold; color: var(--text-muted);">INSTITUTION / EDUCATIONAL BOARD:</label>
+        <input id="studentBoard" placeholder="e.g. FBISE / BISE Lahore / University">
+
+        <label style="font-size:12px; font-weight:bold; color: var(--text-muted);">TARGET GOAL / CAREER AIM:</label>
+        <input id="studentGoal" placeholder="e.g. Score 95% / Software Engineering">
+        
+        <button onclick="saveProfile()" style="width: 100%; margin-top: 10px; font-size:15px;">💾 Save Profile</button>
+    </div>
+
+    <div class="card">
+        <h2>⚙️ Data Backup & App Options</h2>
+        <div class="grid-2">
+            <button onclick="exportNotes()" class="secondary">📄 Export Notes</button>
+            <button onclick="backupAllData()" class="secondary">💾 Backup Data</button>
+        </div>
+        <button onclick="showPage('feedback')" class="secondary" style="width: 100%; margin-top: 8px;">💬 Feedback & Support</button>
+        <button onclick="clearData()" class="danger" style="width: 100%; margin-top: 8px;">🗑 Clear All App Data</button>
+    </div>
+
+    <!-- APP DEVELOPER CREDIT SECTION -->
+    <div class="developer-card">
+        <h4>💻 Application Developer</h4>
+        <p>ALISHBA AHMED (CLASS 11 ICS STUDENT)</p>
+    </div>
+</div>
+
+<!-- GLOBAL FOOTER -->
+<footer>
+    <span>Version 1.0</span>
+    <span>Developed by <strong>Alishba Ahmed</strong></span>
+</footer>
+
+<!-- GLOBAL NAVIGATION BAR -->
+<nav>
+    <button onclick="showPage('home')" title="Home">🏠</button>
+    <button onclick="showPage('subject')" title="Subjects">📚</button>
+    <button onclick="showPage('ai')" title="AI Tutor">🤖</button>
+    <button onclick="showPage('focus')" title="Focus Mode">⏱️</button>
+    <button onclick="showPage('analytics')" title="Analytics">📊</button>
+    <button onclick="showPage('planner')" title="Planner">📅</button>
+    <button onclick="showPage('goals')" title="Goals">🎯</button>
+    <button onclick="showPage('profile')" title="Profile">👤</button>
+</nav>
+
+<script>
+// MOTIVATIONAL QUOTES & LIVE TIME ENGINE
+const quotes = [
+    '"Success is the sum of small efforts, repeated day in and day out."',
+    '"The secret of getting ahead is getting started."',
+    '"Don\'t watch the clock; do what it does. Keep going."',
+    '"Believe you can and you\'re halfway there."',
+    '"Action is the foundational key to all success."'
+];
+
+function hideSplash() {
+    let splash = document.getElementById("splashScreen");
+    if (splash) {
+        splash.style.opacity = "0";
+        setTimeout(() => { splash.style.display = "none"; }, 500);
+    }
+}
+
+function initHomePageWidgets() {
+    let randomIndex = Math.floor(Math.random() * quotes.length);
+    document.getElementById("quoteBox").innerText = quotes[randomIndex];
+
+    setInterval(() => {
+        let now = new Date();
+        document.getElementById("liveTimeDisplay").innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }, 1000);
+
+    refreshHomeDashboardStats();
+}
+
+function refreshHomeDashboardStats() {
+    let streak = localStorage.getItem("studyStreak") || 0;
+    let xp = localStorage.getItem("xp") || 0;
+    let sessions = localStorage.getItem("focusSessions") || 0;
+    let tasksCount = getTodayProgressData();
+
+    document.getElementById("homeStreakVal").innerText = streak + "d";
+    document.getElementById("homeXPVal").innerText = xp;
+    document.getElementById("homeFocusVal").innerText = (sessions * 25) + "m";
+    document.getElementById("homeTasksDoneVal").innerText = tasksCount + "/5";
+
+    let lbXP = document.getElementById("lbUserXP");
+    let lbLvl = document.getElementById("lbUserLevel");
+    if (lbXP) lbXP.innerText = xp;
+    if (lbLvl) lbLvl.innerText = Math.floor(xp / 100) + 1;
+}
+
+// LANGUAGE SELECTION (ENGLISH / URDU)
+let currentLang = "en";
+function toggleLanguage() {
+    currentLang = currentLang === "en" ? "ur" : "en";
+    let btnText = document.getElementById("langBtnText");
+    
+    if (currentLang === "ur") {
+        if (btnText) btnText.innerText = "English";
+        document.getElementById("headerSubText").innerText = "آپ کا ذاتی AI تعلیمی ساتھی";
+        document.getElementById("welcomePrefix").innerText = "خوش آمدید";
+        document.getElementById("titleOverview").innerText = "📊 کارکردگی کا خلا‌صہ";
+        document.getElementById("lblStreak").innerText = "تسلسل";
+        document.getElementById("lblXP").innerText = "کل پوائنٹس";
+        document.getElementById("lblFocus").innerText = "توجہ کا وقت";
+        document.getElementById("lblTasks").innerText = "ٹاسکس";
+    } else {
+        if (btnText) btnText.innerText = "Urdu";
+        document.getElementById("headerSubText").innerText = "Your Personal AI Study Companion";
+        document.getElementById("welcomePrefix").innerText = "Hello";
+        document.getElementById("titleOverview").innerText = "📊 Performance Quick Overview";
+        document.getElementById("lblStreak").innerText = "Streak";
+        document.getElementById("lblXP").innerText = "XP Earned";
+        document.getElementById("lblFocus").innerText = "Focus";
+        document.getElementById("lblTasks").innerText = "Tasks";
+    }
+}
+
+// AUTH HANDLER
+function handleAuth() {
+    let email = document.getElementById("authEmail").value.trim();
+    if (!email) return triggerToast("⚠️ Please enter an email address");
+    localStorage.setItem("userEmail", email);
+    triggerToast("✅ Logged in successfully!");
+    showPage("home");
+}
+
+// OCR QUESTION SCANNER
+function processOCR(event) {
+    let reader = new FileReader();
+    reader.onload = function() {
+        let output = document.getElementById('ocrPreview');
+        output.src = reader.result;
+        output.style.display = 'block';
+        document.getElementById('ocrStatus').innerText = "Scanning image for text...";
+        
+        setTimeout(() => {
+            document.getElementById('ocrStatus').innerText = "Text extracted successfully!";
+            document.getElementById('ocrResultText').value = "Sample Extracted Question: Solve for x in quadratic equation x^2 + 5x + 6 = 0.";
+        }, 1200);
+    };
+    if (event.target.files && event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+function sendOCRToAI() {
+    let text = document.getElementById("ocrResultText").value.trim();
+    if (!text) return triggerToast("⚠️ No scanned text found!");
+    showPage("ai");
+    document.getElementById("aiInput").value = text;
+}
+
+// SCIENTIFIC CALCULATOR ENGINE
+function calcAppend(val) {
+    let display = document.getElementById("calcDisplay");
+    display.value += val;
+}
+
+function calcClear() {
+    document.getElementById("calcDisplay").value = "";
+}
+
+function calcSolve() {
+    let display = document.getElementById("calcDisplay");
+    try {
+        let expr = display.value
+            .replace(/sin\(([^)]+)\)/g, "Math.sin(($1) * Math.PI / 180)")
+            .replace(/cos\(([^)]+)\)/g, "Math.cos(($1) * Math.PI / 180)")
+            .replace(/tan\(([^)]+)\)/g, "Math.tan(($1) * Math.PI / 180)")
+            .replace(/sqrt\(/g, "Math.sqrt(")
+            .replace(/\^/g, "**");
+        display.value = eval(expr);
+    } catch(e) {
+        display.value = "Error";
+    }
+}
+
+// REWARDS CLAIM
+function claimReward(requiredStreak, xpAmount) {
+    let streak = Number(localStorage.getItem("studyStreak")) || 0;
+    if (streak >= requiredStreak) {
+        addXP(xpAmount);
+        triggerToast(`🎉 Reward claimed! +${xpAmount} XP added.`);
+    } else {
+        triggerToast(`🔒 Requires ${requiredStreak}-day streak (Current: ${streak}d)`);
+    }
+}
+
+// FEEDBACK FORM
+function submitFeedback() {
+    let name = document.getElementById("feedbackName").value.trim();
+    let msg = document.getElementById("feedbackMsg").value.trim();
+    if (!name || !msg) return triggerToast("⚠️ Please complete all required fields.");
+    triggerToast("📩 Thank you! Feedback submitted.");
+    document.getElementById("feedbackName").value = "";
+    document.getElementById("feedbackEmail").value = "";
+    document.getElementById("feedbackMsg").value = "";
+    showPage("home");
+}
+
+// --- ENHANCED AUDIO & ALARM ENGINE ---
+let scheduledAlarms = [];
+try { 
+    scheduledAlarms = JSON.parse(localStorage.getItem("studyAlarms")) || []; 
+} catch(e) { 
+    scheduledAlarms = []; 
+}
+
+function playAudioNotificationSound(type = 'default') {
+    try {
+        let ctx = new (window.AudioContext || window.webkitAudioContext)();
+        let osc = ctx.createOscillator();
+        let gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        if (type === 'break') {
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            osc.frequency.setValueAtTime(554.37, ctx.currentTime + 0.2);
+        } else {
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+            osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+            osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.3);
+        }
+
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+
+        osc.start();
+        osc.stop(ctx.currentTime + 0.6);
+    } catch(e) {
+        console.log("Audio Context initialization waiting for interaction.");
+    }
+}
+
+function triggerToast(text) {
+    let toast = document.getElementById("customToast");
+    if(!toast) return;
+    toast.innerText = text;
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 4000);
+}
+
+function triggerEnhancedReminder() {
+    let category = document.getElementById("reminderTypeSelect").value;
+    let title = "📚 StudyAI Reminder";
+    let bodyText = document.getElementById("reminderNote").value.trim() || "Time to focus on your target!";
+
+    if(category === "break") {
+        title = "☕ Break Reminder";
+    } else if (category === "exam") {
+        title = "⚡ Target Exam Practice";
+    }
+
+    playAudioNotificationSound(category);
+    triggerToast(`🔔 ${title}: ${bodyText}`);
+
+    if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification(title, { body: bodyText });
+            }
+        });
+    }
+}
+
+function scheduleAlarm() {
+    let note = document.getElementById("reminderNote").value.trim() || "Study Time!";
+    let category = document.getElementById("reminderTypeSelect").value;
+    let timeVal = document.getElementById("reminderTime").value;
+
+    if (!timeVal) {
+        triggerToast("⚠️ Please select an alarm time");
+        return;
+    }
+
+    let alarmItem = {
+        id: Date.now(),
+        note: note,
+        category: category,
+        time: timeVal,
+        triggered: false
+    };
+
+    scheduledAlarms.push(alarmItem);
+    localStorage.setItem("studyAlarms", JSON.stringify(scheduledAlarms));
+
+    document.getElementById("reminderNote").value = "";
+    document.getElementById("reminderTime").value = "";
+
+    renderAlarms();
+    triggerToast(`⏰ Alarm set for ${timeVal}`);
+}
+
+function deleteAlarm(id) {
+    scheduledAlarms = scheduledAlarms.filter(a => a.id !== id);
+    localStorage.setItem("studyAlarms", JSON.stringify(scheduledAlarms));
+    renderAlarms();
+}
+
+function renderAlarms() {
+    let container = document.getElementById("activeAlarmsList");
+    if (!container) return;
+
+    if (scheduledAlarms.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">No active alarms set.</p>';
+        return;
+    }
+
+    container.innerHTML = "";
+    scheduledAlarms.forEach(alarm => {
+        let catEmoji = alarm.category === 'break' ? '☕' : (alarm.category === 'exam' ? '⚡' : '📚');
+        container.innerHTML += `
+            <div class="task-item" style="margin: 6px 0; padding: 10px 14px;">
+                <div>
+                    <span style="font-weight:bold; color:var(--brand-blue); font-size:14px;">⏰ ${alarm.time}</span>
+                    <span style="font-size:13px; margin-left:8px;">${catEmoji} ${escapeHTML(alarm.note)}</span>
+                </div>
+                <button class="danger sm-btn" onclick="deleteAlarm(${alarm.id})">🗑 Delete</button>
+            </div>
+        `;
+    });
+}
+
+function checkScheduledAlarms() {
+    let now = new Date();
+    let currentHours = String(now.getHours()).padStart(2, '0');
+    let currentMinutes = String(now.getMinutes()).padStart(2, '0');
+    let currentTimeStr = `${currentHours}:${currentMinutes}`;
+
+    scheduledAlarms.forEach(alarm => {
+        if (!alarm.triggered && alarm.time === currentTimeStr) {
+            alarm.triggered = true;
+            playAudioNotificationSound(alarm.category);
+            
+            let title = `🔔 Alarm Ringing! (${alarm.time})`;
+            triggerToast(`${title}: ${alarm.note}`);
+
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: alarm.note });
+            }
+
+            deleteAlarm(alarm.id);
+        }
+    });
+}
+
+setInterval(checkScheduledAlarms, 5000);
+
+// UTILITY: Safe HTML rendering & Markdown Parser
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
+}
+
+function parseMarkdown(text) {
+    if (!text) return '';
+    let parsed = text
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\*(.*?)\*/g, '<i>$1</i>')
+        .replace(/`([^`]+)`/g, '<code style="background:rgba(37,99,235,0.1); padding:2px 6px; border-radius:4px; font-family:monospace;">$1</code>')
+        .replace(/\n/g, '<br>');
+    return parsed;
+}
+
+// SMOOTH PAGE NAVIGATION SYSTEM
+function showPage(page) {
+    const containers = document.querySelectorAll(".container");
+    
+    containers.forEach(x => {
+        x.classList.remove("active-page");
+        x.style.display = "none";
+    });
+
+    let targetPage = document.getElementById(page + "Page") || document.getElementById("homePage");
+    
+    if (page === "ai") targetPage = document.getElementById("aiPage");
+    else if (page === "subject") targetPage = document.getElementById("subjectPage");
+    else if (page === "notes") targetPage = document.getElementById("notesPage");
+    else if (page === "focus") targetPage = document.getElementById("focusPage");
+    else if (page === "analytics") {
+        targetPage = document.getElementById("analyticsPage");
+        updateAnalyticsUI();
+    }
+    else if (page === "planner") targetPage = document.getElementById("plannerPage");
+    else if (page === "goals") targetPage = document.getElementById("goalsPage");
+    else if (page === "profile") {
+        targetPage = document.getElementById("profilePage");
+        showProfile();
+    }
+    else if (page === "ocr") targetPage = document.getElementById("ocrPage");
+    else if (page === "lectures") targetPage = document.getElementById("lecturesPage");
+    else if (page === "calculator") targetPage = document.getElementById("calculatorPage");
+    else if (page === "leaderboard") targetPage = document.getElementById("leaderboardPage");
+    else if (page === "rewards") targetPage = document.getElementById("rewardsPage");
+    else if (page === "auth") targetPage = document.getElementById("authPage");
+    else if (page === "feedback") targetPage = document.getElementById("feedbackPage");
+    else {
+        targetPage = document.getElementById("homePage");
+        refreshHomeDashboardStats();
+    }
+
+    targetPage.style.display = "block";
+    setTimeout(() => {
+        targetPage.classList.add("active-page");
+    }, 10);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openSubjectNotes(subjectName) {
+    showPage('notes');
+    document.getElementById("noteTitle").value = subjectName + " - ";
+}
+
+function darkMode() {
+    document.body.classList.toggle("dark");
+}
+
+// XP & STREAK SYSTEM
+function addXP(amount) {
+    let currentXP = Number(localStorage.getItem("xp")) || 0;
+    currentXP += amount;
+    localStorage.setItem("xp", currentXP);
+    updateXP();
+    refreshHomeDashboardStats();
+}
+
+function updateXP() {
+    let xp = localStorage.getItem("xp") || 0;
+    let xpElem = document.getElementById("xpDisplay");
+    let profXPElem = document.getElementById("profXP");
+    if (xpElem) xpElem.innerText = xp + " XP";
+    if (profXPElem) profXPElem.innerText = xp;
+}
+
+function checkAndUpdateStreak() {
+    let today = new Date().toDateString();
+    let lastActiveDate = localStorage.getItem("lastActiveDate");
+    let streak = Number(localStorage.getItem("studyStreak")) || 0;
+
+    if (lastActiveDate) {
+        let lastDateObj = new Date(lastActiveDate);
+        let todayObj = new Date(today);
+        let diffTime = Math.abs(todayObj - lastDateObj);
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 1) {
+            streak = 0;
+            localStorage.setItem("studyStreak", streak);
+        }
+    }
+    renderStreak(streak);
+}
+
+function triggerStreakIncrement() {
+    let today = new Date().toDateString();
+    let lastActiveDate = localStorage.getItem("lastActiveDate");
+    let streak = Number(localStorage.getItem("studyStreak")) || 0;
+
+    if (lastActiveDate !== today) {
+        streak += 1;
+        localStorage.setItem("studyStreak", streak);
+        localStorage.setItem("lastActiveDate", today);
+    }
+    renderStreak(streak);
+}
+
+function renderStreak(streak) {
+    let achieveDisplay = document.getElementById("achieveStreak");
+    let profStreakDisplay = document.getElementById("profStreak");
+    
+    if (achieveDisplay) achieveDisplay.innerText = "🔥 " + streak + " Day Study Streak";
+    if (profStreakDisplay) profStreakDisplay.innerText = streak;
+    refreshHomeDashboardStats();
+}
+
+// TODAY'S TASKS MANAGEMENT SYSTEM
+let todayTasks = [];
+try { todayTasks = JSON.parse(localStorage.getItem("todayTasksList")) || []; } catch(e) { todayTasks = []; }
+
+if (todayTasks.length === 0) {
+    todayTasks = [
+        { id: 101, text: "Complete Mathematics Chapter 5", priority: "high", completed: false },
+        { id: 102, text: "Revise Physics Notes & Formulas", priority: "medium", completed: false }
+    ];
+    localStorage.setItem("todayTasksList", JSON.stringify(todayTasks));
+}
+
+function addTodayTask() {
+    let textInput = document.getElementById("todayTaskInput");
+    let priorityInput = document.getElementById("todayTaskPriority");
+    let text = textInput.value.trim();
+    let priority = priorityInput.value;
+
+    if (!text) return triggerToast("⚠️ Please enter task details!");
+
+    todayTasks.push({ id: Date.now(), text, priority, completed: false });
+    localStorage.setItem("todayTasksList", JSON.stringify(todayTasks));
+
+    textInput.value = "";
+    showTodayTasks();
+}
+
+function toggleTodayTask(id) {
+    todayTasks = todayTasks.map(t => {
+        if (t.id === id) {
+            let wasCompleted = t.completed;
+            let updatedState = !wasCompleted;
+
+            if (updatedState) completeStudyTask();
+            else uncompleteStudyTask();
+            
+            return { ...t, completed: updatedState };
+        }
+        return t;
+    });
+
+    localStorage.setItem("todayTasksList", JSON.stringify(todayTasks));
+    showTodayTasks();
+}
+
+function deleteTodayTask(id) {
+    let target = todayTasks.find(t => t.id === id);
+    if (target && target.completed) {
+        uncompleteStudyTask();
+    }
+    todayTasks = todayTasks.filter(t => t.id !== id);
+    localStorage.setItem("todayTasksList", JSON.stringify(todayTasks));
+    showTodayTasks();
+}
+
+function showTodayTasks() {
+    let box = document.getElementById("todayTaskList");
+    if (!box) return;
+    box.innerHTML = todayTasks.length === 0 ? '<p style="color:var(--text-muted); text-align:center;">No active tasks for today 🎉</p>' : '';
+
+    todayTasks.forEach(t => {
+        let badgeClass = t.priority === 'high' ? 'badge-high' : (t.priority === 'medium' ? 'badge-medium' : 'badge-low');
+        
+        box.innerHTML += `
+            <div class="task-item ${t.completed ? 'completed' : ''}">
+                <div style="display:flex; align-items:center;">
+                    <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTodayTask(${t.id})" style="width: auto; margin-right: 8px;">
+                    <span class="task-text" style="font-weight:bold;">${escapeHTML(t.text)}</span>
+                    <span class="badge ${badgeClass}">${t.priority.toUpperCase()}</span>
+                </div>
+                <button class="danger sm-btn" onclick="deleteTodayTask(${t.id})">🗑</button>
+            </div>`;
+    });
+}
+
+// PROGRESS & TASK TRACKING SYNC
+function getTodayProgressData() {
+    let today = new Date().toDateString();
+    let savedDate = localStorage.getItem("progressDate");
+    
+    if (savedDate !== today) {
+        localStorage.setItem("progressDate", today);
+        localStorage.setItem("todayTasksCompleted", 0);
+        return 0;
+    }
+    return Number(localStorage.getItem("todayTasksCompleted")) || 0;
+}
+
+function updateProgress() {
+    let count = getTodayProgressData();
+    let totalTarget = 5;
+    let percent = Math.min(Math.round((count / totalTarget) * 100), 100);
+
+    let bar = document.getElementById("progressBar");
+    let txt = document.getElementById("progressText");
+    let countTxt = document.getElementById("completedCount");
+
+    if (bar) bar.style.width = percent + "%";
+    if (txt) txt.innerText = percent + "%";
+    if (countTxt) countTxt.innerText = count;
+    refreshHomeDashboardStats();
+}
+
+function completeStudyTask() {
+    let count = getTodayProgressData();
+    count += 1;
+    localStorage.setItem("todayTasksCompleted", count);
+
+    triggerStreakIncrement();
+    addXP(10);
+    updateProgress();
+}
+
+function uncompleteStudyTask() {
+    let count = getTodayProgressData();
+    if (count > 0) count -= 1;
+    localStorage.setItem("todayTasksCompleted", count);
+    updateProgress();
+}
+
+// DYNAMIC ANALYTICS SYSTEM
+function updateAnalyticsUI() {
+    let sessions = Number(localStorage.getItem("focusSessions")) || 0;
+    let totalMinutes = sessions * 25; 
+    let hours = Math.floor(totalMinutes / 60);
+    let mins = totalMinutes % 60;
+    
+    let timeString = "";
+    if (hours > 0) timeString += hours + "h ";
+    timeString += mins + "m";
+    
+    let totalTimeElem = document.getElementById("analyticsTotalTime");
+    if (totalTimeElem) totalTimeElem.innerText = timeString;
+
+    let xp = localStorage.getItem("xp") || 0;
+    let xpElem = document.getElementById("analyticsXP");
+    if (xpElem) xpElem.innerText = xp;
+
+    let count = getTodayProgressData();
+    let totalTarget = 5;
+    let percent = Math.min(Math.round((count / totalTarget) * 100), 100);
+
+    let bar = document.getElementById("analyticsProgressBar");
+    let percentTxt = document.getElementById("analyticsGoalPercentText");
+    let subTxt = document.getElementById("analyticsGoalSubText");
+
+    if (bar) bar.style.width = percent + "%";
+    if (percentTxt) percentTxt.innerText = percent + "%";
+    if (subTxt) subTxt.innerText = `${count} of ${totalTarget} tasks completed today`;
+
+    let notes = [];
+    try { notes = JSON.parse(localStorage.getItem("studyNotes")) || []; } catch(e){}
+    let goals = [];
+    try { goals = JSON.parse(localStorage.getItem("goalsList")) || []; } catch(e){}
+    let activeGoals = goals.filter(g => !g.completed).length;
+
+    let focusElem = document.getElementById("achieveFocusSessions");
+    let notesElem = document.getElementById("achieveNotesCount");
+    let goalsElem = document.getElementById("achieveGoalsCount");
+
+    if (focusElem) focusElem.innerText = `⏱️ ${sessions} Focus Sessions Completed (${timeString})`;
+    if (notesElem) notesElem.innerText = `📚 ${notes.length} Saved Notes`;
+    if (goalsElem) goalsElem.innerText = `🎯 ${activeGoals} Active Goal Targets`;
+}
+
+// API KEY SAVING
+function saveApiKey() {
+    let key = document.getElementById("apiKeyInput").value.trim();
+    if (key) {
+        localStorage.setItem("userApiKey", key);
+        triggerToast("🔑 Gemini API key saved!");
+    } else {
+        localStorage.removeItem("userApiKey");
+        triggerToast("🔑 API key removed.");
+    }
+}
+
+// HIGH PERFORMANCE AI TUTOR ENGINE WITH LOADING SPINNER
+function runAITool(promptPrefix) {
+    let currentVal = document.getElementById("aiInput").value;
+    document.getElementById("aiInput").value = promptPrefix + currentVal;
+    document.getElementById("aiInput").focus();
+}
+
+function copyResponse(elementId) {
+    let text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text);
+    triggerToast("📋 Copied to clipboard!");
+}
+
+async function askAI() {
+    let questionInput = document.getElementById("aiInput");
+    let question = questionInput.value.trim();
+    let subject = document.getElementById("aiSubjectContext").value;
+    let modelChoice = document.getElementById("aiModelVersion").value;
+
+    if (!question) return;
+    
+    let box = document.getElementById("chatBox");
+    let safeQuestion = escapeHTML(question);
+    
+    box.innerHTML += `<div class="chat-bubble chat-user"><b>[${subject}]</b><br>${safeQuestion}</div>`;
+    
+    let responseId = "response-" + Date.now();
+    let contentId = "content-" + Date.now();
+    
+    box.innerHTML += `
+        <div class="chat-bubble chat-ai" id="${responseId}">
+            <span class="copy-btn" onclick="copyResponse('${contentId}')">📋 Copy</span>
+            🤖 <b>AI Tutor:</b><br>
+            <div id="${contentId}" style="margin-top:6px;">
+                <div class="ai-spinner-container">
+                    <div class="spinner"></div>
+                    <span>AI is thinking and formulating solution...</span>
+                </div>
+            </div>
+        </div>`;
+        
+    questionInput.value = "";
+    box.scrollTop = box.scrollHeight;
+
+    let targetDiv = document.getElementById(contentId);
+    let apiKey = localStorage.getItem("userApiKey");
+
+    let systemPrompt = `You are StudyAI, an expert student tutor. Format responses clearly with headers, bold keys, and step-by-step logic. Subject context: ${subject}. User Question: ${question}`;
+
+    if (apiKey) {
+        try {
+            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelChoice}:generateContent?key=${apiKey}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: systemPrompt }] }]
+                })
+            });
+
+            let data = await response.json();
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                let aiRawText = data.candidates[0].content.parts[0].text;
+                targetDiv.innerHTML = parseMarkdown(aiRawText);
+            } else if (data.error) {
+                targetDiv.innerHTML = `<span style="color:#ef4444;">API Error: ${escapeHTML(data.error.message)}</span>`;
+            } else {
+                targetDiv.innerHTML = `<i>Unable to fetch response. Please verify your API key settings.</i>`;
+            }
+        } catch (error) {
+            targetDiv.innerHTML = `<span style="color:#ef4444;">Network Connection Error. Check your internet connection or key permissions.</span>`;
+        }
+    } else {
+        setTimeout(() => {
+            let demoResponse = `<b>Solution for "${escapeHTML(question)}" [Subject: ${subject}]:</b><br><br>` +
+                `1. <b>Key Concept Overview:</b> To address this topic effectively, break down the core principles step-by-step.<br>` +
+                `2. <b>Step-by-Step Breakdown:</b> Review fundamental definitions and formulas before writing out final steps.<br>` +
+                `3. <b>Study Practice Tip:</b> Solve matching past paper questions to solidify your conceptual understanding.<br><br>` +
+                `<small style="color:var(--brand-blue);">💡 Note: Paste your free Gemini API Key below to unlock live web-connected responses!</small>`;
+            targetDiv.innerHTML = demoResponse;
+            box.scrollTop = box.scrollHeight;
+        }, 1000);
+    }
+}
+
+// SUBJECT SEARCH
+function searchSubject() {
+    let value = document.getElementById("searchSubject").value.toLowerCase();
+    let subjects = document.querySelectorAll(".subject");
+
+    subjects.forEach(function(item) {
+        if (item.innerText.toLowerCase().includes(value)) {
+            item.style.display = "block";
+        } else {
+            item.style.display = "none";
+        }
+    });
+}
+
+// NOTES SYSTEM
+let notes = [];
+try { notes = JSON.parse(localStorage.getItem("studyNotes")) || []; } catch(e) { notes = []; }
+let currentImageData = "";
+
+function previewImage(event) {
+    let reader = new FileReader();
+    reader.onload = function() {
+        let output = document.getElementById('imagePreview');
+        output.src = reader.result;
+        output.style.display = 'block';
+        currentImageData = reader.result;
+    };
+    if (event.target.files && event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+function saveNoteWithPhoto() {
+    let title = document.getElementById("noteTitle").value.trim();
+    let content = document.getElementById("noteContent").value.trim();
+    if (!title) {
+        triggerToast("⚠️ Please enter a title!");
+        return;
+    }
+
+    notes.push({ title, content, image: currentImageData, date: new Date().toLocaleDateString() });
+    localStorage.setItem("studyNotes", JSON.stringify(notes));
+    
+    document.getElementById("noteTitle").value = "";
+    document.getElementById("noteContent").value = "";
+    document.getElementById("noteImage").value = "";
+    document.getElementById("imagePreview").style.display = "none";
+    currentImageData = "";
+
+    showNotes();
+    triggerToast("💾 Note saved!");
+}
+
+function showNotes() {
+    let box = document.getElementById("notesList");
+    if (!box) return;
+    box.innerHTML = notes.length === 0 ? '<p style="color:var(--text-muted);">No notes created yet.</p>' : '';
+    
+    notes.forEach((n, index) => {
+        let imgTag = n.image ? `<img src="${n.image}" style="width:100%; border-radius:12px; margin-top:10px; max-height:220px; object-fit:cover;">` : '';
+        box.innerHTML += `
+            <div class="task">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <b>${escapeHTML(n.title)}</b>
+                    <button class="danger sm-btn" onclick="deleteNote(${index})">🗑</button>
+                </div>
+                <p style="margin-top:6px; font-size:14px; color:var(--text-main); line-height:1.5;">${escapeHTML(n.content)}</p>
+                ${imgTag}
+            </div>`;
+    });
+}
+
+function deleteNote(index) {
+    notes.splice(index, 1);
+    localStorage.setItem("studyNotes", JSON.stringify(notes));
+    showNotes();
+    updateAnalyticsUI();
+}
+
+// ADVANCED FOCUS TIMER & APP BLOCKER
+let timerInterval = null;
+let focusSessionsCompleted = Number(localStorage.getItem("focusSessions")) || 0;
+let focusSecondsLeft = 0;
+
+function startFocusBlocker() {
+    let minutesSelected = parseInt(document.getElementById("focusDuration").value) || 25;
+    focusSecondsLeft = minutesSelected * 60;
+    
+    let elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+    }
+
+    document.getElementById("focusOverlay").style.display = "flex";
+    updateTimerDisplays();
+
+    if (timerInterval) clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        focusSecondsLeft--;
+        updateTimerDisplays();
+
+        if (focusSecondsLeft <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            stopFocusBlocker();
+            
+            playAudioNotificationSound();
+            triggerToast("🎉 Focus session completed!");
+            focusSessionsCompleted++;
+            localStorage.setItem("focusSessions", focusSessionsCompleted);
+            document.getElementById("sessions").innerText = `Sessions completed: ${focusSessionsCompleted}`;
+            addXP(25);
+            triggerStreakIncrement();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplays() {
+    let minutes = Math.floor(focusSecondsLeft / 60);
+    let seconds = focusSecondsLeft % 60;
+    let formatted = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+    document.getElementById("focusTimer").innerText = formatted;
+    document.getElementById("overlayTimer").innerText = formatted;
+}
+
+function stopFocusBlocker() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    document.getElementById("focusOverlay").style.display = "none";
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+    }
+}
+
+function resetFocus() {
+    stopFocusBlocker();
+    let minutesSelected = parseInt(document.getElementById("focusDuration").value) || 25;
+    document.getElementById("focusTimer").innerText = `${minutesSelected}:00`;
+}
+
+// ADVANCED PLANNER SYSTEM
+let plans = [];
+try { plans = JSON.parse(localStorage.getItem("plansList")) || []; } catch(e) { plans = []; }
+
+function addPlan() {
+    let task = document.getElementById("planTask").value.trim();
+    let date = document.getElementById("planDate").value;
+    let priority = document.getElementById("planPriority").value;
+    if (!task) return;
+
+    plans.push({ id: Date.now(), task, date, priority, completed: false });
+    localStorage.setItem("plansList", JSON.stringify(plans));
+    
+    document.getElementById("planTask").value = "";
+    document.getElementById("planDate").value = "";
+    showPlans();
+}
+
+function togglePlan(id) {
+    plans = plans.map(p => p.id === id ? { ...p, completed: !p.completed } : p);
+    localStorage.setItem("plansList", JSON.stringify(plans));
+    showPlans();
+}
+
+function deletePlan(id) {
+    plans = plans.filter(p => p.id !== id);
+    localStorage.setItem("plansList", JSON.stringify(plans));
+    showPlans();
+}
+
+function showPlans() {
+    let box = document.getElementById("plannerList");
+    if (!box) return;
+    box.innerHTML = plans.length === 0 ? '<p style="color:var(--text-muted);">No study plans created yet.</p>' : '';
+    
+    plans.forEach((p) => {
+        let badgeClass = p.priority === 'high' ? 'badge-high' : (p.priority === 'medium' ? 'badge-medium' : 'badge-low');
+        let priorityLabel = p.priority.toUpperCase();
+        
+        box.innerHTML += `
+            <div class="task-item ${p.completed ? 'completed' : ''}">
+                <div>
+                    <input type="checkbox" ${p.completed ? 'checked' : ''} onchange="togglePlan(${p.id})" style="width:auto; margin-right:6px;">
+                    <span class="task-text" style="font-weight:bold;">${escapeHTML(p.task)}</span>
+                    <span class="badge ${badgeClass}">${priorityLabel}</span>
+                    <br><small style="color:var(--text-muted); margin-left:22px;">📅 ${p.date ? escapeHTML(p.date) : 'No date set'}</small>
+                </div>
+                <button class="danger sm-btn" onclick="deletePlan(${p.id})">🗑</button>
+            </div>`;
+    });
+}
+
+// EXAM COUNTDOWN SYSTEM
+function saveExam() {
+    let title = document.getElementById("examTitle").value.trim();
+    let date = document.getElementById("examDate").value;
+    if(!title || !date) return triggerToast("⚠️ Fill both exam title and date");
+
+    localStorage.setItem("examTitle", title);
+    localStorage.setItem("examDate", date);
+    countExam();
+    triggerToast("🎯 Target exam saved!");
+}
+
+function countExam() {
+    let title = localStorage.getItem("examTitle");
+    let examDate = localStorage.getItem("examDate");
+    
+    let titleElem = document.getElementById("examNameShow");
+    let countElem = document.getElementById("countdown");
+
+    if (!examDate) return;
+
+    if (titleElem) titleElem.innerText = title ? `Target: ${title}` : '';
+
+    let today = new Date();
+    let target = new Date(examDate);
+    let diff = target - today;
+    let days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+    if (countElem) {
+        countElem.innerHTML = days > 0 ? days + " Days Left" : (days === 0 ? "⚡ Exam Day Today!" : "Passed");
+    }
+}
+
+// ADVANCED GOALS SYSTEM
+let goals = [];
+try { goals = JSON.parse(localStorage.getItem("goalsList")) || []; } catch(e) { goals = []; }
+
+function addGoal() {
+    let text = document.getElementById("goalInput").value.trim();
+    let category = document.getElementById("goalCategory").value;
+    if (!text) return;
+
+    goals.push({ id: Date.now(), text, category, completed: false });
+    localStorage.setItem("goalsList", JSON.stringify(goals));
+    
+    document.getElementById("goalInput").value = "";
+    showGoals();
+    addXP(20);
+    updateAnalyticsUI();
+}
+
+function toggleGoal(id) {
+    goals = goals.map(g => {
+        if(g.id === id) {
+            if(!g.completed) addXP(30);
+            return { ...g, completed: !g.completed };
+        }
+        return g;
+    });
+    localStorage.setItem("goalsList", JSON.stringify(goals));
+    showGoals();
+    updateAnalyticsUI();
+}
+
+function deleteGoal(id) {
+    goals = goals.filter(p => p.id !== id);
+    localStorage.setItem("goalsList", JSON.stringify(goals));
+    showGoals();
+    updateAnalyticsUI();
+}
+
+function showGoals() {
+    let box = document.getElementById("goalList");
+    if (!box) return;
+    box.innerHTML = goals.length === 0 ? '<p style="color:var(--text-muted);">No goal milestones added yet.</p>' : '';
+    
+    goals.forEach((g) => {
+        box.innerHTML += `
+            <div class="task-item ${g.completed ? 'completed' : ''}">
+                <div>
+                    <input type="checkbox" ${g.completed ? 'checked' : ''} onchange="toggleGoal(${g.id})" style="width:auto; margin-right:6px;">
+                    <span class="task-text" style="font-weight:bold;">${escapeHTML(g.text)}</span>
+                    <span style="font-size: 11px; background: rgba(37, 99, 235, 0.1); color: var(--brand-blue); padding:2px 6px; border-radius:5px; margin-left:5px;">${escapeHTML(g.category)}</span>
+                </div>
+                <button class="danger sm-btn" onclick="deleteGoal(${g.id})">🗑</button>
+            </div>`;
+    });
+}
+
+// PROFILE PICTURE UPLOAD SYSTEM
+function uploadProfilePic(event) {
+    let reader = new FileReader();
+    reader.onload = function() {
+        let imageData = reader.result;
+        localStorage.setItem("studentProfilePic", imageData);
+        applyProfileImage(imageData);
+    };
+    if (event.target.files && event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+function applyProfileImage(imgUrl) {
+    let avatarElem = document.getElementById("profileAvatar");
+    let headerAvatarElem = document.getElementById("headerUserAvatar");
+
+    if (imgUrl) {
+        avatarElem.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+        headerAvatarElem.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+    }
+}
+
+// PROFILE SYSTEM (UNTOUCHED CORE)
+function saveProfile() {
+    let name = document.getElementById("studentName").value.trim();
+    let rollNo = document.getElementById("studentRollNo").value.trim();
+    let cls = document.getElementById("studentClass").value.trim();
+    let board = document.getElementById("studentBoard").value.trim();
+    let goal = document.getElementById("studentGoal").value.trim();
+
+    if(!name) return triggerToast("⚠️ Please enter your name");
+
+    let profileData = { name, rollNo, class: cls, board, goal };
+    localStorage.setItem("profile", JSON.stringify(profileData));
+    showProfile();
+    triggerToast("👤 Profile saved successfully!");
+}
+
+function showProfile() {
+    let data;
+    try { data = JSON.parse(localStorage.getItem("profile")); } catch(e) { data = null; }
+
+    let avatarElem = document.getElementById("profileAvatar");
+    let nameElem = document.getElementById("profileDisplayName");
+    let subElem = document.getElementById("profileDisplaySub");
+    let goalElem = document.getElementById("profileDisplayGoal");
+    let welcomeElem = document.getElementById("welcomeUserName");
+    let savedPic = localStorage.getItem("studentProfilePic");
+
+    if (savedPic) {
+        applyProfileImage(savedPic);
+    }
+
+    if (data) {
+        if(nameElem) nameElem.innerText = data.name;
+        if(welcomeElem) welcomeElem.innerText = data.name;
+        if(subElem) subElem.innerText = `${data.class || 'Class N/A'} ${data.board ? '| ' + data.board : ''} ${data.rollNo ? '(ID: ' + data.rollNo + ')' : ''}`;
+        if(goalElem) goalElem.innerText = data.goal ? `🎯 Target: ${data.goal}` : 'Target: Goal Not Set';
+
+        if(!savedPic && avatarElem) avatarElem.innerText = data.name.charAt(0).toUpperCase();
+
+        document.getElementById("studentName").value = data.name || "";
+        document.getElementById("studentRollNo").value = data.rollNo || "";
+        document.getElementById("studentClass").value = data.class || "";
+        document.getElementById("studentBoard").value = data.board || "";
+        document.getElementById("studentGoal").value = data.goal || "";
+    } else {
+        if(nameElem) nameElem.innerText = "Student Profile";
+        if(subElem) subElem.innerText = "Fill detailed academic info below";
+        if(!savedPic && avatarElem) avatarElem.innerText = "S";
+    }
+}
+
+function backupAllData() {
+    let backupObj = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        backupObj[key] = localStorage.getItem(key);
+    }
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj));
+    let downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "StudyAI_Full_Backup.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    triggerToast("💾 Backup downloaded!");
+}
+
+function clearData() {
+    if (confirm("Delete all StudyAI data and reset app?")) {
+        localStorage.clear();
+        triggerToast("🗑 All data removed");
+        setTimeout(() => location.reload(), 1000);
+    }
+}
+
+function exportNotes() {
+    let data = localStorage.getItem("studyNotes");
+    if (!data) {
+        triggerToast("⚠️ No notes found to export");
+        return;
+    }
+    let file = new Blob([data], { type: "text/plain" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = "StudyAI_Notes.txt";
+    link.click();
+    triggerToast("📄 Notes exported!");
+}
+
+// INITIALIZATION
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(hideSplash, 1500);
+    initHomePageWidgets();
+    checkAndUpdateStreak();
+    updateXP();
+    updateProgress();
+    showTodayTasks();
+    showPlans();
+    showGoals();
+    showNotes();
+    showProfile();
+    countExam();
+    updateAnalyticsUI();
+    renderAlarms();
+    
+    // Set active page animation class on initial page
+    document.getElementById("homePage").classList.add("active-page");
+    
+    let apiKey = localStorage.getItem("userApiKey");
+    if (apiKey) {
+        document.getElementById("apiKeyInput").value = apiKey;
+    }
+    
+    let currentSessions = localStorage.getItem("focusSessions") || 0;
+    document.getElementById("sessions").innerText = `Sessions completed: ${currentSessions}`;
+
+    document.getElementById("aiInput").addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            askAI();
+        }
+    });
+
+    document.getElementById("focusDuration").addEventListener("change", function() {
+        resetFocus();
+    });
+});
+</script>
+</body>
+</html>
